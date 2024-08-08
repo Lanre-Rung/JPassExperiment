@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pkpass?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: lan.pass.demo.mapper
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    default-statement-timeout: 25
+server:
+  port: 8081

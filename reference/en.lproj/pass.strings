@@ -1,0 +1,12 @@
+﻿{
+  "cupn_points" = "Points";
+  "mrch_name" = "Merchant Name";
+  "mem_cardno" = "Membership Card Number";
+  "mem_level" = "level";
+  "cupn_state" = "state";
+  "website_url" = "url";
+  "merch_addr" = "Merchant Address";
+  "merch_inkm" = "Merchant Contact";
+  "merch_phone" = "Merchant Contact Phone";
+  "mem_agreement" = "Membership Agreement";
+}

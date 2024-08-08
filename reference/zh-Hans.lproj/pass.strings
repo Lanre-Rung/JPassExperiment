@@ -1,0 +1,12 @@
+﻿{
+    "cupn_points" = "积分";
+    "mrch_name" = "商户名称";
+    "mem_cardno" = "会员卡号";
+    "mem_level" = "级别";
+    "cupn_state" = "状态";
+    "website_url" = "网址";
+    "merch_addr" = "商户地址";
+    "merch_inkm" = "商户联系人";
+    "merch_phone" = "商户联系电话";
+    "mem_agreement" = "会员协议";
+}
