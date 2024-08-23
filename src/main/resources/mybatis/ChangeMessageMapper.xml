@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.ChangeMessageMapper">
+  <resultMap id="ChangeMessageItemResultMap" type="lan.pass.demo.model.ChangeMessage" autoMapping="false">
+    <id property="id" column="id" />
+    <result property="index" column="index" />
+    <result property="type" column="type" />
+    <result property="content" column="content" />
+    <result property="changeMessageId" column="change_message_id"/>
+    <result property="assetId" column="asset_id"/>
+    <result property="originalId" column="original_id" />
+    <result property="lastModified" column="last_modified"/>
+    <!-- Association for Location -->
+    <association property="location" javaType="lan.pass.demo.model.Location">
+      <id property="id" column="location_id" />
+      <result property="latitude" column="latitude" />
+      <result property="longitude" column="longitude" />
+      <result property="altitude" column="altitude" />
+      <result property="isActive" column="location_is_active" />
+    </association>
+
+    <!-- Association for Beacon -->
+    <association property="beacon" javaType="lan.pass.demo.model.Beacon">
+      <id property="id" column="beacon_id" />
+      <result property="isActive" column="beacon_is_active" />
+      <result property="proximityUUID" column="uuid" />
+      <result property="major" column="major" />
+      <result property="minor" column="minor" />
+    </association>
+
+    <!-- Association for RelevantDate -->
+    <association property="relevantDate" javaType="lan.pass.demo.model.RelevantDate">
+      <id property="id" column="relevant_date_id" />
+      <result property="date" column="relevant_date" />
+      <result property="isActive" column="relevant_date_is_active" />
+    </association>
+
+    <!-- Association for Field -->
+    <association property="field" javaType="lan.pass.demo.model.Field">
+      <id property="id" column="field_id" />
+      <result property="isActive" column="field_is_active" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, content, asset_id, is_active, `name`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ChangeMessageItemResultMap">
+    SELECT *
+    FROM
+    change_message_info
+    WHERE
+    is_active = 1
+    AND change_message_id = #{id,jdbcType=BIGINT}
+    AND is_latest = 1
+  </select>
+
+  <select id="selectHistory" parameterType="java.lang.Long" resultMap="ChangeMessageItemResultMap">
+    SELECT *
+    FROM
+    change_message_info
+    WHERE
+    original_id = #{id,jdbcType=BIGINT}
+    AND is_active = 1
+    ORDER BY last_modified DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    update change_message set is_active = 0
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.ChangeMessage" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into change_message (content, asset_id, `name`, `type`)
+    values (#{content,jdbcType=VARCHAR}, #{assetId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=BIGINT})
+  </insert>
+  <update id="afterInsert" parameterType="lan.pass.demo.model.ChangeMessage">
+    <!--@mbg.generated-->
+    update change_message
+    set original_id = id
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="beforeUpdate" parameterType="lan.pass.demo.model.ChangeMessage">
+    <!--@mbg.generated-->
+    update change_message
+    set is_latest = 0
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insertEditRecord" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.ChangeMessage" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into change_message (content, asset_id, `name`, `original_id`, `type`)
+    values (#{content,jdbcType=VARCHAR}, #{assetId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{originalId,jdbcType=BIGINT},
+    #{type,jdbcType=BIGINT}
+    )
+  </insert>
+  <select id="selectChangeMessageByChildIds" resultMap="ChangeMessageItemResultMap" parameterType="map">
+    SELECT *
+    FROM
+    change_message_info
+    WHERE is_latest = 1
+    AND is_active = 1
+    AND
+    <choose>
+      <when test="beaconId != null">
+       beacon_id = #{beaconId}
+      </when>
+      <otherwise>
+        <choose>
+          <when test="fieldId != null">
+            field_id = #{fieldId}
+          </when>
+          <otherwise>
+            <choose>
+              <when test="locationId != null">
+                location_id = #{locationId}
+              </when>
+              <otherwise>
+                <choose>
+                  <when test="relevantDateId != null">
+                    relevant_date_id = #{relevantDateId}
+                  </when>
+                  <otherwise>
+                    FALSE
+                  </otherwise>
+                </choose>
+              </otherwise>
+            </choose>
+          </otherwise>
+        </choose>
+      </otherwise>
+    </choose>
+  </select>
+  <select id="selectChangeMessageInfo" resultMap="ChangeMessageItemResultMap" parameterType="map">
+    SELECT *
+    FROM
+    change_message_info
+    WHERE
+    is_active = 1
+    AND is_latest = 1
+    AND owner_id = #{owner_id}
+    AND (0
+    <if test="beacon == true">OR beacon_is_active = 1</if>
+    <if test="field == true">OR field_is_active = 1</if>
+    <if test="location == true">OR location_is_active = 1</if>
+    <if test="relevant_date == true">OR relevant_date_is_active = 1</if>
+    )
+  </select>
+  <insert id="insertPassChangeMessage" parameterType="map">
+    <!-- 插入操作，使用选择性插入，根据传入的参数动态插入字段 -->
+    insert into pass_change_message (pass_id, change_message_id, `index`, `type`)
+    values (
+    #{passId, jdbcType=BIGINT},
+    #{chgMessageId, jdbcType=BIGINT},
+    #{index, jdbcType=INTEGER},
+    #{type, jdbcType=INTEGER}
+    )
+  </insert>
+  <delete id="deletePassChangeMessageByPassId" parameterType="java.lang.Long">
+    delete from pass_change_message
+    where pass_id = #{passId, jdbcType=BIGINT}
+  </delete>
+
+  <!-- Select statement to fetch ChangeMessageItems by passId -->
+  <select id="selectChangeMessageItemsByPassId" resultMap="ChangeMessageItemResultMap" parameterType="java.lang.Long">
+    SELECT *
+    FROM
+    pass_change_message_info
+    WHERE
+    pass_id = #{passId}
+  </select>
+  <select id="selectByPrimaryKeys" parameterType="list" resultMap="ChangeMessageItemResultMap">
+    SELECT *
+    FROM
+    change_message_info
+    WHERE
+    is_active = 1
+    AND is_latest = 1
+    AND change_message_id IN
+    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <update id="restore" parameterType="lan.pass.demo.model.ChangeMessage">
+    <!--@mbg.generated-->
+    update change_message
+    set is_latest = 1
+    where id = #{id}
+  </update>
+
+  <delete id="deleteOtherHistory" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    update change_message
+    set is_active = 0, is_latest = 0
+    where original_id = #{originalId,jdbcType=BIGINT} AND id > #{changeMessageId,jdbcType=BIGINT}
+  </delete>
+</mapper>

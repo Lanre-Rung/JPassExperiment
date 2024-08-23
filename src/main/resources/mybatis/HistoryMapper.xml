@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.HistoryMapper">
+
+    <resultMap id="HistoryResultMap" type="History">
+        <id property="id" column="history_id" />
+        <result property="operationId" column="operation_id" />
+        <result property="merchantId" column="merchant_id" />
+        <result property="date" column="date" />
+        <result property="passId" column="pass_id" />
+        <result property="operationType" column="operation_type" />
+    </resultMap>
+
+    <!-- SQL statement to get history by user ID -->
+    <select id="selectHistoryByUserId" resultType="History">
+        SELECT *
+        FROM history_view h
+        WHERE h.merchant_id = #{userId}
+    </select>
+
+    <!-- SQL statement to get history by pass ID -->
+    <select id="selectHistoryByPassId" resultType="History">
+        SELECT *
+        FROM history_view h
+        WHERE h.pass_id = #{passId}
+    </select>
+
+    <!-- SQL statement to get history by both user ID and pass ID -->
+    <select id="selectHistoryByBothIds" resultType="History">
+        SELECT *
+        FROM history_view h
+        WHERE h.merchant_id = #{userId}
+        AND h.pass_id = #{passId}
+    </select>
+
+    <!-- Insert a new history entry -->
+    <insert id="insertHistory" parameterType="History" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO history (operation_id, merchant_id, date, pass_id)
+        VALUES (#{operationId}, #{merchantId}, #{date}, #{passId})
+        <selectKey keyColumn="id" resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- Edit an existing history entry -->
+    <update id="updateHistory">
+        UPDATE history
+        SET operation_id=#{operationId}, merchant_id=#{merchantId}, date=#{date}, pass_id=#{passId}
+        WHERE id=#{id}
+    </update>
+
+    <!-- View a history entry by ID -->
+    <select id="selectHistoryById" resultType="History">
+        SELECT * FROM history WHERE id = #{id}
+    </select>
+
+    <!-- Delete a history entry by ID -->
+    <delete id="deleteHistory">
+        DELETE FROM history WHERE id = #{id}
+    </delete>
+</mapper>

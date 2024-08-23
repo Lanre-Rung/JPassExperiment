@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.UnionMemberMapper">
+  <resultMap id="BaseResultMap" type="lan.pass.demo.model.UnionMember">
+    <!--@mbg.generated-->
+    <!--@Table union_member-->
+    <id column="union_id" jdbcType="BIGINT" property="unionId" />
+    <id column="merchant_id" jdbcType="BIGINT" property="merchantId" />
+    <result column="is_administrator" jdbcType="SMALLINT" property="isAdministrator" />
+  </resultMap>
+  <resultMap id="UnionMemberUnionsResultMap" type="lan.pass.demo.model.Union">
+    <result column="union_id" jdbcType="BIGINT" property="id" />
+    <result column="union_name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <resultMap id="MerchantResultMap" type="lan.pass.demo.model.Merchant">
+    <result column="merchant_id" jdbcType="BIGINT" property="id" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="name" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    union_id, merchant_id, is_administrator
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from union_member
+    where union_id = #{unionId,jdbcType=BIGINT}
+      and merchant_id = #{merchantId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    <!--@mbg.generated-->
+    delete from union_member
+    where union_id = #{unionId,jdbcType=BIGINT}
+      and merchant_id = #{merchantId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="lan.pass.demo.model.UnionMember">
+    <!--@mbg.generated-->
+    insert into union_member (union_id, merchant_id, is_administrator
+      )
+    values (#{unionId,jdbcType=BIGINT}, #{merchantId,jdbcType=BIGINT}, #{isAdministrator,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="lan.pass.demo.model.UnionMember">
+    <!--@mbg.generated-->
+    insert into union_member
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="unionId != null">
+        union_id,
+      </if>
+      <if test="merchantId != null">
+        merchant_id,
+      </if>
+      <if test="isAdministrator != null">
+        is_administrator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="unionId != null">
+        #{unionId,jdbcType=BIGINT},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=BIGINT},
+      </if>
+      <if test="isAdministrator != null">
+        #{isAdministrator,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="lan.pass.demo.model.UnionMember">
+    <!--@mbg.generated-->
+    update union_member
+    <set>
+      <if test="isAdministrator != null">
+        is_administrator = #{isAdministrator,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where union_id = #{unionId,jdbcType=BIGINT}
+      and merchant_id = #{merchantId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="lan.pass.demo.model.UnionMember">
+    <!--@mbg.generated-->
+    update union_member
+    set is_administrator = #{isAdministrator,jdbcType=SMALLINT}
+    where union_id = #{unionId,jdbcType=BIGINT}
+      and merchant_id = #{merchantId,jdbcType=BIGINT}
+  </update>
+  <select id="selectUnionsByMemberId" parameterType="java.lang.Long" resultMap="UnionMemberUnionsResultMap">
+    SELECT
+    union_id,
+    union_name
+    FROM
+    union_member_info
+    WHERE
+    union_member_info.merchant_id = #{memberId,jdbcType=BIGINT}
+  </select>
+  <select id="selectMerchantByUnionId" parameterType="java.lang.Long" resultMap="MerchantResultMap">
+    SELECT
+    merchant_id,
+    merchant_name,
+    phone,
+    email
+    FROM
+    union_member_info umi
+    WHERE
+    umi.union_id = #{unionId,jdbcType=BIGINT}
+  </select>
+</mapper>

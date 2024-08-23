@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.UnionMapper">
+  <resultMap id="BaseResultMap" type="lan.pass.demo.model.Union">
+    <!--@mbg.generated-->
+    <!--@Table `union`-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="owner_id" jdbcType="BIGINT" property="ownerId" />
+    <result column="is_active" jdbcType="SMALLINT" property="isActive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `name`, owner_id, is_active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from `union`
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    update `union`
+    set is_active = 0
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.Union" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into `union` (`name`, owner_id, is_active
+      )
+    values (#{name,jdbcType=VARCHAR}, #{ownerId,jdbcType=BIGINT}, #{isActive,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.Union" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into `union`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="lan.pass.demo.model.Union">
+    <!--@mbg.generated-->
+    update `union`
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="lan.pass.demo.model.Union">
+    <!--@mbg.generated-->
+    update `union`
+    set `name` = #{name,jdbcType=VARCHAR},
+      owner_id = #{ownerId,jdbcType=BIGINT},
+      is_active = #{isActive,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByOwnerId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `union`
+    where owner_id = #{ownerId,jdbcType=BIGINT}
+  </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="lan.pass.demo.mapper.AssetMapper">
+
+    <!-- Insert a new asset -->
+    <insert id="insertAsset" parameterType="lan.pass.demo.model.Asset" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO asset (name, owner_id, `type`)
+        VALUES (#{name}, #{ownerId}, #{type})
+        <selectKey keyColumn="id" resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- Select an asset by ID -->
+    <select id="selectAssetById" parameterType="java.lang.Long" resultType="lan.pass.demo.model.Asset">
+        SELECT * FROM asset WHERE id = #{id}
+    </select>
+
+    <!-- Update an existing asset -->
+    <update id="updateAsset" parameterType="lan.pass.demo.model.Asset">
+        UPDATE asset
+        SET name = #{name},
+            is_active = #{isActive},
+            owner_id = #{ownerId}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Delete an asset by ID -->
+    <delete id="deleteAssetById" parameterType="java.lang.Long">
+        DELETE FROM asset WHERE id = #{id}
+    </delete>
+
+</mapper>

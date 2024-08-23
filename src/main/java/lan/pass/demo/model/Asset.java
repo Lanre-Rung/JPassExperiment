@@ -5,19 +5,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Pass {
+public class Asset {
+
     private Long id;
+
     private String name;
-    private Long ownerId;
+
     private Boolean isActive;
-    private LocalDateTime lastModified;
-    private LocalDateTime createdDate;
-    private Boolean isTemplate;
-    private Long assetId;
+
+    private Long ownerId;
+
+    private int type;
+
+    private Merchant owner;
+
+    private Image image;
+
+    private Pass pass;
+
+    private ChangeMessage changeMessageItem;
 }

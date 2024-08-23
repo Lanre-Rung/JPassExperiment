@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "global.file.path",
+      "type": "java.lang.String",
+      "description": "Description for global.file.path."
+  }
+] }

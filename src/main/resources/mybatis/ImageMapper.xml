@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.ImageMapper">
+    <!-- Insert a new image -->
+    <insert id="insertImage" parameterType="lan.pass.demo.model.Image" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO image (`name`, `type`, `asset_id`)
+        VALUES (#{name}, #{type}, #{assetId})
+        <selectKey keyColumn="id" resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- Select an image by ID -->
+    <select id="selectImageById" parameterType="java.lang.Long" resultType="lan.pass.demo.model.Image">
+        SELECT * FROM image_info WHERE id = #{id}
+    </select>
+
+    <!-- Select an image by ID -->
+    <select id="getImagesByOwnerId" parameterType="java.lang.Long" resultType="lan.pass.demo.model.Image">
+        SELECT * FROM image_info WHERE owner_id = #{id} LIMIT #{offset}, #{pageCount}
+    </select>
+
+    <!-- Update an existing image -->
+    <update id="updateImage" parameterType="lan.pass.demo.model.Image">
+        UPDATE image
+        SET name = #{name},
+            type = #{type}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Delete an image by ID -->
+    <update id="deleteImageById" parameterType="java.lang.Long">
+        UPDATE image
+        SET is_active = 0
+        WHERE id = #{id}
+    </update>
+</mapper>

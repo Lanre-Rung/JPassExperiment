@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.RelevantDateMapper">
+  <resultMap id="BaseResultMap" type="lan.pass.demo.model.RelevantDate">
+    <!--@mbg.generated-->
+    <!--@Table relevant_date-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="change_message_id" jdbcType="BIGINT" property="changeMessageId" />
+    <result column="is_active" jdbcType="SMALLINT" property="isActive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `date`, change_message_id, is_active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from relevant_date
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from relevant_date
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.RelevantDate" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into relevant_date (`date`, change_message_id, is_active
+      )
+    values (#{date,jdbcType=TIMESTAMP}, #{changeMessageId,jdbcType=BIGINT}, #{isActive,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.RelevantDate" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into relevant_date
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="date != null">
+        `date`,
+      </if>
+      <if test="changeMessageId != null">
+        change_message_id,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="changeMessageId != null">
+        #{changeMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="lan.pass.demo.model.RelevantDate">
+    <!--@mbg.generated-->
+    update relevant_date
+    <set>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="changeMessageId != null">
+        change_message_id = #{changeMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="lan.pass.demo.model.RelevantDate">
+    <!--@mbg.generated-->
+    update relevant_date
+    set `date` = #{date,jdbcType=TIMESTAMP},
+      change_message_id = #{changeMessageId,jdbcType=BIGINT},
+      is_active = #{isActive,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

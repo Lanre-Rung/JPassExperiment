@@ -10,7 +10,15 @@ import java.util.zip.ZipOutputStream;
  * 此类提供了将目录压缩成ZIP文件的功能。
  */
 public class Compressor {
-
+    public static byte[] readInputStreamToByteArray(InputStream inputStream) throws IOException {
+        byte[] buffer = new byte[1024];
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int nRead;
+        while ((nRead = inputStream.read(buffer, 0, buffer.length)) != -1) {
+            outputStream.write(buffer, 0, nRead);
+        }
+        return outputStream.toByteArray();
+    }
     /**
      * 将指定目录及其所有子目录和文件压缩成一个ZIP文件。
      *

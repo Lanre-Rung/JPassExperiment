@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.MerchantMapper">
+
+    <!-- ResultMap for Merchant -->
+    <resultMap id="MerchantResultMap" type="Merchant">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="password" column="password" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+    </resultMap>
+
+    <!-- Insert a new merchant and get the generated ID -->
+    <insert id="insertMerchant" parameterType="Merchant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO merchant (name, password, phone, email)
+        VALUES (#{name}, #{password}, #{phone}, #{email})
+        <selectKey keyColumn="id" resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- Select a merchant by ID -->
+    <select id="selectMerchantById" resultMap="MerchantResultMap">
+        SELECT * FROM merchant WHERE id = #{id}
+    </select>
+    <!-- Find a merchant by email, optionally with password check -->
+    <select id="findByEmailAndPassword" parameterType="map" resultType="Merchant">
+        SELECT * FROM merchant
+        WHERE email = #{email}
+        <if test="ignorePassword == false">
+            AND password = #{password}
+        </if>
+    </select>
+
+    <!-- Find a merchant by phone, optionally with password check -->
+    <select id="findByPhoneAndPassword" parameterType="map" resultType="Merchant">
+    SELECT * FROM merchant
+    WHERE phone = #{phone}
+    <if test="ignorePassword == false">
+        AND password = #{password}
+    </if>
+    </select>
+
+    <!-- Select all merchant -->
+    <select id="selectAllMerchants" resultMap="MerchantResultMap">
+        SELECT * FROM merchant
+    </select>
+
+    <!-- Update a merchant's information -->
+    <update id="updateMerchant">
+        UPDATE merchant SET name = #{name} WHERE id = #{id}
+    </update>
+
+    <!-- Delete a merchant by ID -->
+    <delete id="deleteMerchant">
+        DELETE FROM merchant WHERE id = #{id}
+    </delete>
+
+    <!-- Delete merchant permissions -->
+    <delete id="deleteMerchantPermissions">
+            DELETE FROM combine_pass
+            WHERE pass_id = #{passId}
+            AND merchant_id IN
+            <foreach item="item" collection="toDeletes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            AND owner_id = #{ownerId}
+    </delete>
+
+</mapper>

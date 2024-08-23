@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.UnionAssetMapper">
+  <resultMap id="BaseResultMap" type="lan.pass.demo.model.UnionAsset">
+    <!--@mbg.generated-->
+    <!--@Table union_asset-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="union_id" jdbcType="BIGINT" property="unionId" />
+    <result column="asset_id" jdbcType="BIGINT" property="assetId" />
+  </resultMap>
+
+  <resultMap id="AssetResultMap" type="lan.pass.demo.model.Asset" autoMapping="true">
+    <id column="asset_id" property="id" />
+    <result column="asset_name" property="name" />
+    <result column="asset_is_active" property="isActive" />
+    <result column="asset_owner_id" property="ownerId" />
+    <result column="asset_type" property="type" />
+
+    <!-- Assuming Merchant is a simple property and not a complex object -->
+    <result column="owner_id" property="owner.id" />
+
+    <!-- Image association -->
+    <association property="image" javaType="lan.pass.demo.model.Image">
+      <id column="image_id" property="id" />
+      <result column="image_name" property="name" />
+      <result column="image_is_active" property="isActive" />
+      <result column="image_type" property="type" />
+    </association>
+
+    <!-- Pass association -->
+    <association property="pass" javaType="lan.pass.demo.model.Pass">
+      <id column="pass_id" property="id" />
+      <result column="pass_name" property="name" />
+      <result column="pass_is_active" property="isActive" />
+      <result column="pass_last_modified" property="lastModified" />
+      <result column="pass_created_date" property="createdDate" />
+      <result column="is_template" property="isTemplate" />
+    </association>
+
+    <!-- ChangeMessage association -->
+    <association property="changeMessageItem" javaType="lan.pass.demo.model.ChangeMessage">
+      <id column="change_message_id" property="changeMessageId" />
+      <result column="change_message_content" property="content" />
+      <!-- Add other fields for ChangeMessage as needed -->
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, union_id, asset_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from union_asset
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from union_asset
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.UnionAsset" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into union_asset (union_id, asset_id)
+    values (#{unionId,jdbcType=BIGINT}, #{assetId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.UnionAsset" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into union_asset
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="unionId != null">
+        union_id,
+      </if>
+      <if test="assetId != null">
+        asset_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="unionId != null">
+        #{unionId,jdbcType=BIGINT},
+      </if>
+      <if test="assetId != null">
+        #{assetId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="lan.pass.demo.model.UnionAsset">
+    <!--@mbg.generated-->
+    update union_asset
+    <set>
+      <if test="unionId != null">
+        union_id = #{unionId,jdbcType=BIGINT},
+      </if>
+      <if test="assetId != null">
+        asset_id = #{assetId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="lan.pass.demo.model.UnionAsset">
+    <!--@mbg.generated-->
+    update union_asset
+    set union_id = #{unionId,jdbcType=BIGINT},
+      asset_id = #{assetId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectAssetByUnionIds" parameterType="java.lang.Long" resultMap="AssetResultMap">
+    SELECT
+        asset_id,
+        asset_name,
+        asset_is_active,
+        asset_owner_id,
+        asset_type,
+        pass_id,
+        pass_name,
+        pass_is_active,
+        pass_last_modified,
+        image_id,
+        image_name,
+        image_is_active,
+        image_type,
+        change_message_id,
+        change_message_content,
+        change_message_is_active,
+        change_message_name,
+        union_id,
+        union_name,
+        union_owner_id,
+        union_is_active
+    FROM combined_asset_union_info
+    WHERE union_id IN
+    <foreach item="unionId" index="index" collection="unionIds" open="(" separator="," close=")">
+    #{unionId}
+  </foreach>
+    AND asset_type IN
+    <foreach item="type" index="index" collection="types" open="(" separator="," close=")">
+      #{type}
+    </foreach>
+    </select>
+</mapper>

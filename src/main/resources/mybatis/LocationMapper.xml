@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lan.pass.demo.mapper.LocationMapper">
+  <resultMap id="BaseResultMap" type="lan.pass.demo.model.Location">
+    <!--@mbg.generated-->
+    <!--@Table location-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="latitude" jdbcType="FLOAT" property="latitude" />
+    <result column="longitude" jdbcType="FLOAT" property="longitude" />
+    <result column="altitude" jdbcType="FLOAT" property="altitude" />
+    <result column="change_message_id" jdbcType="BIGINT" property="changeMessageId" />
+    <result column="is_active" jdbcType="SMALLINT" property="isActive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, latitude, longitude, altitude, change_message_id, is_active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from location
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from location
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.Location" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into location (latitude, longitude, altitude, 
+      change_message_id, is_active)
+    values (#{latitude,jdbcType=FLOAT}, #{longitude,jdbcType=FLOAT}, #{altitude,jdbcType=FLOAT}, 
+      #{changeMessageId,jdbcType=BIGINT}, #{isActive,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="lan.pass.demo.model.Location" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into location
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="altitude != null">
+        altitude,
+      </if>
+      <if test="changeMessageId != null">
+        change_message_id,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="latitude != null">
+        #{latitude,jdbcType=FLOAT},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=FLOAT},
+      </if>
+      <if test="altitude != null">
+        #{altitude,jdbcType=FLOAT},
+      </if>
+      <if test="changeMessageId != null">
+        #{changeMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="lan.pass.demo.model.Location">
+    <!--@mbg.generated-->
+    update location
+    <set>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=FLOAT},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=FLOAT},
+      </if>
+      <if test="altitude != null">
+        altitude = #{altitude,jdbcType=FLOAT},
+      </if>
+      <if test="changeMessageId != null">
+        change_message_id = #{changeMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="lan.pass.demo.model.Location">
+    <!--@mbg.generated-->
+    update location
+    set latitude = #{latitude,jdbcType=FLOAT},
+      longitude = #{longitude,jdbcType=FLOAT},
+      altitude = #{altitude,jdbcType=FLOAT},
+      change_message_id = #{changeMessageId,jdbcType=BIGINT},
+      is_active = #{isActive,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

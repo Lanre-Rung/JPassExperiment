@@ -1,15 +1,20 @@
 package lan.pass.demo.controller;
 
-import de.brendamour.jpasskit.PKPass;
 import lan.pass.demo.model.Pass;
 import lan.pass.demo.request.PassRequest;
 import lan.pass.demo.service.PassService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -24,18 +29,66 @@ public class PassController {
     }
 
     @PostMapping
-    public ResponseEntity<PKPass> createPass(@RequestBody PassRequest request) {
-        PKPass pass = passService.createPass(request);
-        if (pass != null) {
-            return ResponseEntity.ok(pass);
-        } else {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Object> createPass(@RequestBody PassRequest request) {
+        Object pass = passService.createPass(request);
+        return ResponseEntity.ok(pass);
+    }
+
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> download(@PathVariable("id") Long id) {
+        // Call the method that now returns byte[] directly
+        byte[] passFileContent = passService.getPassFileContent(id); // Assuming this is the new method name
+
+        if (passFileContent != null) {
+            // Create an InputStreamResource from the byte array
+            InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(passFileContent));
+
+            // Build the response entity with the resource
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + id + ".pkpass")
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(resource);
         }
+
+        // Return a bad request response if there's an issue
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> getEditContent(@PathVariable("id") Long id) {
+        Pass pass = passService.getPassById(id);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("passData", pass);
+        response.put("fileData", passService.getEditContent(id));
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> editPass(@RequestBody PassRequest request) {
+        Object pass = passService.editPass(request, null);
+        return ResponseEntity.ok(pass);
+    }
+
+    @PutMapping("/multiple")
+    public ResponseEntity<Object> editMultiplePasses(@RequestBody PassRequest request) {
+        Object result = passService.editMultiplePasses(request);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")
     public Pass getPassById(@PathVariable Long id) {
         return passService.getPassById(id);
+    }
+
+    @GetMapping("/owner_id/{id}")
+    public List<Pass> getPassesByOwnerId(@PathVariable("id") Long id, @RequestParam(value = "template", required = false) boolean isTemplate) {
+        return passService.selectPassByOwnerId(id, isTemplate);
+    }
+
+    @GetMapping("/merchant_id/{id}")
+    public List<Pass> getPassesByMerchantId(@PathVariable("id") Long id, @RequestParam(value = "template", required = false) boolean isTemplate) {
+        return passService.selectPassByMerchantId(id, isTemplate);
     }
 
     @GetMapping
@@ -49,7 +102,7 @@ public class PassController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePass(@PathVariable Long id) {
-        passService.deletePass(id);
+    public int deletePass(@PathVariable Long id, @RequestParam("ownerId") Long ownerId) {
+        return passService.deletePass(id, ownerId);
     }
 }
