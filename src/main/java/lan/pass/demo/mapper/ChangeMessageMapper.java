@@ -34,7 +34,7 @@ public interface ChangeMessageMapper {
             @Param("location") Boolean location,
             @Param("relevant_date") Boolean relevantDate);
 
-    int insertPassChangeMessage(@Param("passId") Long passId, @Param("chgMessageId") Long chgMessageId,
+    int insertPassChangeMessage(@Param("passId") Long passId, @Param("originalId") Long originalId,
                                 @Param("index") int index, @Param("type") int type);
 
     int deletePassChangeMessageByPassId(Long passId);

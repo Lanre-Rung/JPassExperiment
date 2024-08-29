@@ -52,7 +52,6 @@
     WHERE
     is_active = 1
     AND change_message_id = #{id,jdbcType=BIGINT}
-    AND is_latest = 1
   </select>
 
   <select id="selectHistory" parameterType="java.lang.Long" resultMap="ChangeMessageItemResultMap">
@@ -151,7 +150,7 @@
     insert into pass_change_message (pass_id, change_message_id, `index`, `type`)
     values (
     #{passId, jdbcType=BIGINT},
-    #{chgMessageId, jdbcType=BIGINT},
+    #{originalId, jdbcType=BIGINT},
     #{index, jdbcType=INTEGER},
     #{type, jdbcType=INTEGER}
     )

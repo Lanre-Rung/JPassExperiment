@@ -89,7 +89,7 @@ public class PassConverter {
     }
     public static <T, C> ChangeMessage convertNodeToCMI(C nodeItem, Class<T> targetClass) {
         ChangeMessage item = new ChangeMessage();
-
+        if (nodeItem == null) return null;
         // Check if the targetClass is one of the supported types in ChangeMessage
         if (!ChangeMessageType.recognizedPKClass.containsValue(targetClass)) {
             throw new IllegalArgumentException("Unsupported target class: " + targetClass.getName());

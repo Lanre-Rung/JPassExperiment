@@ -19,6 +19,7 @@ import lan.pass.demo.request.Personalization;
 import lan.pass.demo.utility.Compressor;
 import lan.pass.demo.utility.DirectoryHashWriter;
 import lan.pass.demo.utility.PassConverter;
+import lombok.var;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -178,8 +179,11 @@ public class PassService {
         if (passRequest.getDataRelevantDate() != null) {
             List<ChangeMessage> cmt = new ArrayList<>();
             cmt.add(passRequest.getDataRelevantDate());
-            ZonedDateTime zonedDateTime = ZonedDateTime.parse(changeMessageService.siftThrough(cmt, String.class, createPKPassType == CreatePKPassType.Read).get(0), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            builder.relevantDate(zonedDateTime.toInstant());
+            var result = changeMessageService.siftThrough(cmt, String.class, createPKPassType == CreatePKPassType.Read);
+            if (result.size() > 0){
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(result.get(0), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                builder.relevantDate(zonedDateTime.toInstant());
+            }
         }
         if (passRequest.getExpirationDate() != null) {
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(passRequest.getExpirationDate(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);

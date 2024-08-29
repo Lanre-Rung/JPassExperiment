@@ -87,6 +87,7 @@ public class ChangeMessageService{
     public ChangeMessage selectByPrimaryKey(Long id) {
         ChangeMessage responseChangeMessage = changeMessageMapper.selectByPrimaryKey(id);
         selectFromFile(responseChangeMessage);
+        collectChangeMessage(responseChangeMessage);
         return responseChangeMessage;
     }
 
@@ -94,11 +95,15 @@ public class ChangeMessageService{
         List<ChangeMessage> history = changeMessageMapper.selectHistory(id);
         ChangeMessage latest = history.get(0);
         selectFromFile(latest);
+        collectChangeMessage(latest);
         return latest;
     }
 
     public List<ChangeMessage> getHistory(Long id) {
         List<ChangeMessage> history = changeMessageMapper.selectHistory(id);
+        for (ChangeMessage cmi : history){
+            collectChangeMessage(cmi);
+        }
         selectFromFile(history);
         return history;
     }
@@ -106,12 +111,18 @@ public class ChangeMessageService{
     public List<ChangeMessage> selectByPrimaryKeys(List<Long> ids) {
         List<ChangeMessage> messages = changeMessageMapper.selectByPrimaryKeys(ids);
         selectFromFile(messages);
+        for (ChangeMessage cmi : messages){
+            collectChangeMessage(cmi);
+        }
         return messages;
     }
 
     public List<ChangeMessage> getMessageByOwnerId(Long id, boolean beacon, boolean location, boolean field, boolean relevantDate){
         List<ChangeMessage> messages = changeMessageMapper.selectChangeMessageInfo(id, beacon, location, field, relevantDate);
         selectFromFile(messages);
+        for (ChangeMessage cmi : messages){
+            collectChangeMessage(cmi);
+        }
         return messages;
     }
 
@@ -197,7 +208,11 @@ public class ChangeMessageService{
                 chgId = item.getField().getChangeMessageId();
             }
             if (chgId != null){
-                changeMessageMapper.insertPassChangeMessage(passRequest.getId(), chgId, i, ChangeMessageType.fieldTypes.get(type));
+                ChangeMessage changeMessage = changeMessageMapper.selectByPrimaryKey(chgId);
+                if (changeMessage == null){
+                    return "请插入存在的id";
+                }
+                changeMessageMapper.insertPassChangeMessage(passRequest.getId(), changeMessage.getOriginalId(), i, ChangeMessageType.fieldTypes.get(type));
             }
         }
         return "";
@@ -275,9 +290,27 @@ public class ChangeMessageService{
         return resultList;
     }
 
+    public void collectChangeMessage(ChangeMessage changeMessage){
+        if (changeMessage.getLocation() != null){
+            changeMessage.getLocation().setChangeMessageId(changeMessage.getChangeMessageId());
+        }
+        if (changeMessage.getBeacon() != null){
+            changeMessage.getBeacon().setChangeMessageId(changeMessage.getChangeMessageId());
+        }
+        if (changeMessage.getRelevantDate() != null){
+            changeMessage.getRelevantDate().setChangeMessageId(changeMessage.getChangeMessageId());
+        }
+        if (changeMessage.getField() != null){
+            changeMessage.getField().setChangeMessageId(changeMessage.getChangeMessageId());
+        }
+    }
+
     public String loadChangeMessageItem(PassRequest passRequest){
         if (passRequest.getId() == null) return "pass不存在id";
         List<ChangeMessage> items = changeMessageMapper.selectChangeMessageItemsByPassId(passRequest.getId());
+        for (ChangeMessage cmi : items){
+            collectChangeMessage(cmi);
+        }
         for (ChangeMessage cmi : pickChangeMessageItem(items, ChangeMessageType.Locations)){
             int index = cmi.getIndex();
             passRequest.getDataLocations().add(index, cmi);

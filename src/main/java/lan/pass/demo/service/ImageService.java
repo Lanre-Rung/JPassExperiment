@@ -65,7 +65,7 @@ public class ImageService {
     }
 
     public List<Image> getImagesByOwnerId(Long id, Long pageIndex, Long pageCount){
-        Long offset = (pageIndex - 1) * pageCount;
+        Long offset = pageIndex > 0 && pageCount > 0? (pageIndex - 1) * pageCount : -1;
         List<Image> images = imageMapper.getImagesByOwnerId(id, offset, pageCount);
         for (Image image : images){
             packImage(image);

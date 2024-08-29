@@ -18,7 +18,11 @@
 
     <!-- Select an image by ID -->
     <select id="getImagesByOwnerId" parameterType="java.lang.Long" resultType="lan.pass.demo.model.Image">
-        SELECT * FROM image_info WHERE owner_id = #{id} LIMIT #{offset}, #{pageCount}
+        SELECT * FROM image_info
+        WHERE owner_id = #{id}
+        <if test="offset > 0 and pageCount > 0">
+            LIMIT #{offset}, #{pageCount}
+        </if>
     </select>
 
     <!-- Update an existing image -->

@@ -30,8 +30,8 @@ public class ImageController {
 
     // Get an image by ID
     @GetMapping("/owner_id/{id}")
-    public ResponseEntity<?> getImagesByOwnerId(@PathVariable Long id, @RequestParam(value = "pageIndex", required = false, defaultValue = "1") Long pageIndex,
-                                                @RequestParam(value = "pageCount", required = false, defaultValue = "10") Long pageCount) {
+    public ResponseEntity<?> getImagesByOwnerId(@PathVariable Long id, @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") Long pageIndex,
+                                                @RequestParam(value = "pageCount", required = false, defaultValue = "-1") Long pageCount) {
         List<Image> images = imageService.getImagesByOwnerId(id, pageIndex, pageCount);
         return ResponseEntity.ok(images);
     }
